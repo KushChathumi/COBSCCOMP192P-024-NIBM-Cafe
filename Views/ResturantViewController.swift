@@ -6,17 +6,18 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ResturantViewController: UIViewController {
 
     @IBOutlet weak var TableView: UITableView!
     
     var foods = [
-        Food(dictionary: ["name":"Double Cheese Burger", "description": "Tangy pickle, chopped onions, ketchup, mustard, and two slices of melted American cheese.", "price":650, "place": "Burger King"]),
-        Food(dictionary: ["name":"Chocolate Delights ", "description": "A tempting delicacy made with chocolate chips and topped with rice chocolet sauce", "price":250, "place": "Royal Bakery"]),
-        Food(dictionary: ["name":"Pasta Salad", "description": "Pasta, red onion, carrots, tomatoes, broccoli florets, white wine vinegar", "price":550, "place": "Caravan Fresh"]),
-        Food(dictionary: ["name":"Chocolate Melt Lava Cake", "description": "Soft, moist chocolate cake with a burst of thick, hot liquid chocole inside", "price":300, "place": "Royal Bakery"]),
-        Food(dictionary: ["name":"Seafood Dirty Rice", "description": "Shrimp, Scallions, green onions, Crab meat, Thyme, White pepper, Garlic, Celery, Green bell peppers", "price":950, "place": "Sen-Saal"])
+        Food(dictionary: ["name":"Double Cheese Burger", "description": "Tangy pickle, chopped onions, ketchup, mustard, and two slices of melted American cheese.", "price":"LKR 650", "place": "Burger King", "distanc": "0.5km"]),
+        Food(dictionary: ["name":"Chocolate Delights ", "description": "A tempting delicacy made with chocolate chips and topped with rice chocolet sauce", "price":"LKR 250", "place": "Royal Bakery","distanc": "0.5km"]),
+        Food(dictionary: ["name":"Pasta Salad", "description": "Pasta, red onion, carrots, tomatoes, broccoli florets, white wine vinegar", "price":"LKR 550", "place": "Caravan Fresh","distanc": "0.5km"]),
+        Food(dictionary: ["name":"Chocolate Melt Lava Cake", "description": "Soft, moist chocolate cake with a burst of thick, hot liquid chocole inside", "price":"LKR 300", "place": "Royal Bakery","distanc": "0.5km"]),
+        Food(dictionary: ["name":"Seafood Dirty Rice", "description": "Shrimp, Scallions, green onions, Crab meat, Thyme, White pepper, Garlic, Celery, Green bell peppers", "price":"LKR 950", "place": "Sen-Saal","distanc": "0.5km"])
         ] {
         didSet {
             TableView.reloadData()
@@ -29,6 +30,9 @@ class ResturantViewController: UIViewController {
         TableView.dataSource = self
 
         // Do any additional setup after loading the view.
+    }
+    @IBAction func LogoutTapped(_ sender: Any) {
+        signout()
     }
 }
 
@@ -52,7 +56,21 @@ extension ResturantViewController: UITableViewDataSource{
         cell.foodName.text = foods[indexPath.row].name
         cell.foodDescription.text = foods[indexPath.row].description
         cell.foodPlace.text = foods[indexPath.row].place
-        //cell.locationLabel.text = foods[indexPath.row].location
+        cell.foodPrice.text = foods[indexPath.row].price
+        cell.locationLabel.text = foods[indexPath.row].distanc
         return cell 
+    }
+}
+
+func signout(){
+    do{
+        try Auth.auth().signOut()
+        let stroryboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = stroryboard.instantiateViewController(identifier: "OnBoardingViewController") as? ViewController
+        vc?.modalPresentationStyle = .overCurrentContext
+        //self.present(vc, animated: true, completion: nil)
+    }
+    catch{
+        print("DEBUG: sign out error")
     }
 }
